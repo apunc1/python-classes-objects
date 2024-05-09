@@ -1,55 +1,38 @@
-# employee1_name = "Ji-Soo"
-# employee1_age = 38
-# employee1_position = "developer"
-# employee1_salary = 1200
+class Employee:
+    __slots__ = ("name", "age", "salary")
 
-# employee2_name = "Lauren"
-# employee2_age = 44
-# employee2_position = "tester"
-# employee2_salary = 1000
+    def __init__(self, name, age, salary):
+        self.name = name
+        self.age = age
+        self.salary = salary
 
+    def increase_salary(self, percent):
+        self.salary += self.salary * (percent/100)
 
-# employee1 = ["Ji-Soo", 38, "developer", 1200]
-# employee2 = ["Lauren", 44, "tester", 1000]
-
-
-employee1 = {
-    "name": "Ji-Soo",
-    "age": 38,
-    "position": "developer",
-    "salary": 1200
-}
-employee2 = {
-    "name": "Lauren",
-    "age": 44,
-    "position": "tester",
-    "salary": 1000
-}
+    def has_slots(self):
+        return hasattr(self, "__slots__")
 
 
-def init_employee(name, age, position, salary):
-    return {
-        "name": name,
-        "age": age,
-        "position": position,
-        "salary": salary
-    }
+class SlotsInspectorMixin:
+    __slots__ = ()
+
+    def has_slots(self):
+        return hasattr(self, "__slots__")
 
 
-employee3 = init_employee("Mateo", 38, "developer", 200)
+class Developer(SlotsInspectorMixin, Employee):
+    __slots__ = ("framework", )
+
+    def __init__(self, name, age, salary, framework):
+        super().__init__(name, age, salary)
+        self.framework = framework
+
+    def increase_salary(self, percent, bonus=0):
+        super().increase_salary(percent)
+        self.salary += bonus
 
 
-def increase_salary(employee, percent):
-    employee['salary'] += employee['salary'] * (percent/100)
-
-
-def employee_info(employee):
-    print(f"{employee['name']} is {employee['age']} years old. Employee is a {employee['position']} with the salary of ${employee['salary']}")
-
-
-employees = [employee1, employee2]
-increase_salary(employee2, 20)
-for e in employees:
-    employee_info(e)
-    # print(f"{e[0]}s' salary is ${e[3]}")
-    # print(f"{e['name']} salary is ${e['salary']}")
+employee2 = Developer("Ji-Soo", 38, 1000, "Flask")
+print(employee2.__dict__)
+# print(employee2.has_slots())
+# print(Developer.__mro__)
